@@ -1,21 +1,28 @@
-import { TodoExistError } from '../../domain/todo.errors.ts';
+import {
+  ID_IS_NOT_VALID_MSG,
+  TITLE_IS_NOT_VALID_MSG,
+  TITLE_IS_TOO_SHORT_MSG,
+  TodoDtoParsingError,
+  TodoExistError,
+  type TodoParingErrorMsgType,
+} from '../../domain/todo.errors.ts';
 import { Todo } from '../../domain/todo.model.ts';
 import type { TodosRepository } from '../ports/todosRepository.port.ts';
 import * as z from 'zod/v4';
 
 const createTodoDTO = z.object({
-  id: z.string(),
-  title: z.string(),
+  id: z.string({ error: ID_IS_NOT_VALID_MSG }),
+  title: z.string({ error: TITLE_IS_NOT_VALID_MSG }).min(2, { message: TITLE_IS_TOO_SHORT_MSG }),
 });
 
 export type CreateTodoDTO = z.infer<typeof createTodoDTO>;
 
 export const createTodoUC = async (todosRepository: TodosRepository, todoDto: CreateTodoDTO) => {
-  if (!createTodoDTO.validate(todoDto)) {
-    return Error('Invalid todo dto');
+  let parsed = createTodoDTO.safeParse(todoDto);
+  if (parsed.error) {
+    return new TodoDtoParsingError(parsed.error.issues[0].message as TodoParingErrorMsgType);
   }
-  const newTodo = new Todo();
-  newTodo.createNew(todoDto.id, todoDto.title);
+  const newTodo = new Todo(todoDto);
   const todos = await todosRepository.getAll();
   const existing = todos.find((t) => t.title === newTodo.title);
   if (existing) {
