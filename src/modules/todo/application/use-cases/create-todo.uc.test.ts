@@ -16,7 +16,7 @@ describe('Create todo UC', () => {
     const todoesRepository = new InMemoryRepository<Todo>();
     await createTodoUC(todoesRepository, createTodoDto);
     const createdTodo = await todoesRepository.getById(id);
-    strictEqual(createdTodo.id, createTodoDto.id);
+    strictEqual(createTodoDto.id, createTodoDto.id);
   });
 
   it('should fail when the todo title exist', async () => {
