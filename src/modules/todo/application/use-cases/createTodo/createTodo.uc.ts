@@ -3,9 +3,9 @@ import {
   TodoDtoParsingError,
   TodoExistError,
   type TodoParingErrorMsgType,
-} from '../../domain/todo.errors.ts';
-import { Todo } from '../../domain/todo.model.ts';
-import type { TodosRepository } from '../ports/todosRepository.port.ts';
+} from '../../../domain/todo.errors.ts';
+import { Todo } from '../../../domain/todo.model.ts';
+import type { TodosRepository } from '../../ports/todosRepository.port.ts';
 import * as z from 'zod/v4';
 
 const createTodoDTO = z.object({

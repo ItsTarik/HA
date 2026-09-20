@@ -1,7 +1,7 @@
 import type { Id } from '../../support/id.ts';
-import type { CreateTodoDTO } from '../application/use-cases/create-todo.uc.ts';
+import type { CreateTodoDTO } from '../application/use-cases/createTodo/createTodo.uc.ts';
 
-export type TodoSnapshot = {
+export type TodoState = {
   id: Id;
   title: string;
   completed: boolean;
@@ -24,7 +24,7 @@ export class Todo {
     this.createdAt = new Date().toISOString();
   }
 
-  getSnapshot(): TodoSnapshot {
+  getSnapshot(): TodoState {
     return {
       id: this.id,
       title: this.title,

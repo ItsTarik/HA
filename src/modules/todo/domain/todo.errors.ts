@@ -1,4 +1,8 @@
-export class TodoExistError extends Error {}
+export class TodoExistError extends Error {
+  constructor() {
+    super('Todo title already exist');
+  }
+}
 
 export const TODO_PARSING_ERROR = {
   ID_IS_NOT_VALID_MSG: 'id is not valid',
