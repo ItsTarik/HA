@@ -9,11 +9,19 @@ export const FastifyDrizzlePluging = fp(async (fastify) => {
     connectionString: process.env.DB_URL,
   });
 
-  const db = drizzle({ client: pool });
+  try {
+    const db = drizzle({ client: pool });
 
-  fastify.decorate('db', db);
+    fastify.decorate('db', db);
 
-  fastify.addHook('onClose', async () => {
+    fastify.log.info('Database connected successfully');
+
+    fastify.addHook('onClose', async () => {
+      await pool.end();
+    });
+  } catch (error) {
+    fastify.log.error(error, 'Database connection failed', error);
     await pool.end();
-  });
+    throw error;
+  }
 });
