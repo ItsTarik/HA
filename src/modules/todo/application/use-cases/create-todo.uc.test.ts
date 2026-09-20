@@ -5,9 +5,7 @@ import { randomUUID } from 'node:crypto';
 import { createTodoUC, type CreateTodoDTO } from './create-todo.uc.ts';
 import { InMemoryRepository } from '../../../support/test-utils/inMemoryRepository.ts';
 import {
-  ID_IS_NOT_VALID_MSG,
-  TITLE_IS_NOT_VALID_MSG,
-  TITLE_IS_TOO_SHORT_MSG,
+  TODO_PARSING_ERROR,
   TodoDtoParsingError,
   TodoExistError,
 } from '../../domain/todo.errors.ts';
@@ -19,9 +17,9 @@ describe('Create todo UC', () => {
       id,
       title: 'new todo',
     };
-    const todoesRepository = new InMemoryRepository<TodoSnapshot>();
-    await createTodoUC(todoesRepository, createTodoDto);
-    const createdTodo = await todoesRepository.getById(id);
+    const todosRepository = new InMemoryRepository<TodoSnapshot>();
+    await createTodoUC(todosRepository, createTodoDto);
+    const createdTodo = await todosRepository.getById(id);
     strictEqual(createTodoDto.id, createdTodo?.id);
   });
 
@@ -31,10 +29,10 @@ describe('Create todo UC', () => {
       id,
       title: 'new todo',
     };
-    const todoesRepository = new InMemoryRepository<TodoSnapshot>([
+    const todosRepository = new InMemoryRepository<TodoSnapshot>([
       new Todo(createTodoDto).getSnapshot(),
     ]);
-    const createdTodo = await createTodoUC(todoesRepository, createTodoDto);
+    const createdTodo = await createTodoUC(todosRepository, createTodoDto);
     strictEqual(createdTodo instanceof TodoExistError, true);
   });
 
@@ -44,13 +42,16 @@ describe('Create todo UC', () => {
       id,
       title: 'new todo',
     };
-    const todoesRepository = new InMemoryRepository<TodoSnapshot>();
+    const todosRepository = new InMemoryRepository<TodoSnapshot>();
     const createdTodoOrError = await createTodoUC(
-      todoesRepository,
+      todosRepository,
       createTodoDto as unknown as CreateTodoDTO
     );
     strictEqual(createdTodoOrError instanceof TodoDtoParsingError, true);
-    strictEqual((createdTodoOrError as TodoDtoParsingError)?.message, ID_IS_NOT_VALID_MSG);
+    strictEqual(
+      (createdTodoOrError as TodoDtoParsingError)?.message,
+      TODO_PARSING_ERROR.ID_IS_NOT_VALID_MSG
+    );
   });
 
   it('should fail when the title in dto is bad', async () => {
@@ -59,13 +60,16 @@ describe('Create todo UC', () => {
       id,
       title: null,
     };
-    const todoesRepository = new InMemoryRepository<TodoSnapshot>();
+    const todosRepository = new InMemoryRepository<TodoSnapshot>();
     const createdTodoOrError = await createTodoUC(
-      todoesRepository,
+      todosRepository,
       createTodoDto as unknown as CreateTodoDTO
     );
     strictEqual(createdTodoOrError instanceof TodoDtoParsingError, true);
-    strictEqual((createdTodoOrError as TodoDtoParsingError)?.message, TITLE_IS_NOT_VALID_MSG);
+    strictEqual(
+      (createdTodoOrError as TodoDtoParsingError)?.message,
+      TODO_PARSING_ERROR.TITLE_IS_NOT_VALID_MSG
+    );
   });
 
   it('should fail when the title in dto is too short', async () => {
@@ -74,12 +78,15 @@ describe('Create todo UC', () => {
       id,
       title: 't',
     };
-    const todoesRepository = new InMemoryRepository<TodoSnapshot>();
+    const todosRepository = new InMemoryRepository<TodoSnapshot>();
     const createdTodoOrError = await createTodoUC(
-      todoesRepository,
+      todosRepository,
       createTodoDto as unknown as CreateTodoDTO
     );
     strictEqual(createdTodoOrError instanceof TodoDtoParsingError, true);
-    strictEqual((createdTodoOrError as TodoDtoParsingError)?.message, TITLE_IS_TOO_SHORT_MSG);
+    strictEqual(
+      (createdTodoOrError as TodoDtoParsingError)?.message,
+      TODO_PARSING_ERROR.TITLE_IS_TOO_SHORT_MSG
+    );
   });
 });

@@ -1,7 +1,5 @@
 import {
-  ID_IS_NOT_VALID_MSG,
-  TITLE_IS_NOT_VALID_MSG,
-  TITLE_IS_TOO_SHORT_MSG,
+  TODO_PARSING_ERROR,
   TodoDtoParsingError,
   TodoExistError,
   type TodoParingErrorMsgType,
@@ -11,8 +9,10 @@ import type { TodosRepository } from '../ports/todosRepository.port.ts';
 import * as z from 'zod/v4';
 
 const createTodoDTO = z.object({
-  id: z.string({ error: ID_IS_NOT_VALID_MSG }),
-  title: z.string({ error: TITLE_IS_NOT_VALID_MSG }).min(2, { message: TITLE_IS_TOO_SHORT_MSG }),
+  id: z.string({ error: TODO_PARSING_ERROR.ID_IS_NOT_VALID_MSG }),
+  title: z
+    .string({ error: TODO_PARSING_ERROR.TITLE_IS_NOT_VALID_MSG })
+    .min(2, { message: TODO_PARSING_ERROR.TITLE_IS_TOO_SHORT_MSG }),
 });
 
 export type CreateTodoDTO = z.infer<typeof createTodoDTO>;
