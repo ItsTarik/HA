@@ -1,0 +1,9 @@
+# Postgres root
+POSTGRES_USER=root
+POSTGRES_PASSWORD=root
+
+# TODOS_APP_DB_USER App DB
+TODOS_APP_DB=todos
+TODOS_APP_DB_USER=todos
+TODOS_APP_DB_PASSWORD=todospass
+

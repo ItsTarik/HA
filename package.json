@@ -11,19 +11,26 @@
     "dev": "node --watch src/index.ts",
     "start": "node src/index.ts",
     "test": "node --test",
-    "test:watch": "node --test --watch"
+    "test:watch": "node --test --watch",
+    "drizzle:generate": "pnpm drizzle-kit generate",
+    "drizzle:migrate": "pnpm drizzle-kit migrate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.45.2",
     "fastify": "^5.12.5",
+    "fastify-plugin": "^6.0.0",
+    "pg": "^8.23.0",
     "prettier": "^3.7.4",
     "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@types/node": "^v24.12.0"
+    "@types/node": "^v24.12.0",
+    "@types/pg": "^8.23.1",
+    "drizzle-kit": "^0.31.10"
   },
   "packageManager": "pnpm@10.13.1"
 }

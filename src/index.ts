@@ -1,8 +1,11 @@
-console.log('todo');
+import 'dotenv/config';
 import Fastify from 'fastify';
 import { TodosHttpAdapter } from './modules/todo/adapters/http/todosHttp.adapter.ts';
+import { FastifyDrizzlePluging } from './db/drizzle/drizzle.plugin.ts';
 
 const fastify = Fastify({ logger: true });
+
+fastify.register(FastifyDrizzlePluging);
 
 fastify.register(TodosHttpAdapter);
 

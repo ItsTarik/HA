@@ -1,17 +1,17 @@
 import type { FastifyInstance } from 'fastify';
-import { TodosInMemoryRepositoryAdapter } from '../persistence/todosInMemoryRepositoryAdapter.ts';
 import {
   createTodoUC,
   type CreateTodoDTO,
 } from '../../application/use-cases/createTodo/createTodo.uc.ts';
 import { randomUUID } from 'node:crypto';
 import { getTodosUC } from '../../application/use-cases/getTodos/getTodos.uc.ts';
-
-const inMemoryTodosRepositoryAdapter = new TodosInMemoryRepositoryAdapter();
+import { TodosDrizzleRepositoryAdapter } from '../persistence/todosDrizzleRepositoryAdapter.ts';
 
 export const TodosHttpAdapter = (fastify: FastifyInstance) => {
   fastify.post<{ Body: Omit<CreateTodoDTO, 'id'> }>('/todos', async (request, reply) => {
-    const created = await createTodoUC(inMemoryTodosRepositoryAdapter, {
+    fastify.db;
+    const drizzleTodosRepositoryAdapter = new TodosDrizzleRepositoryAdapter(fastify.db);
+    const created = await createTodoUC(drizzleTodosRepositoryAdapter, {
       id: randomUUID(),
       title: request.body.title,
     });
@@ -26,7 +26,9 @@ export const TodosHttpAdapter = (fastify: FastifyInstance) => {
   });
 
   fastify.get('/todos', async (request, reply) => {
-    const todos = await getTodosUC(inMemoryTodosRepositoryAdapter);
+    const drizzleTodosRepositoryAdapter = new TodosDrizzleRepositoryAdapter(fastify.db);
+
+    const todos = await getTodosUC(drizzleTodosRepositoryAdapter);
     return reply.status(200).send(todos);
   });
 };
