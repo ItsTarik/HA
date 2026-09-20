@@ -5,5 +5,5 @@ import { strictEqual } from 'node:assert';
 test('getAll todos should be empty', async () => {
   const todosInMemoryRepository = new TodosInMemoryRepositoryAdapter();
   const todos = await todosInMemoryRepository.getAll();
-  strictEqual(todos, []);
+  strictEqual(todos.length, 0);
 });

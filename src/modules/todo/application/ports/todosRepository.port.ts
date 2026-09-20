@@ -5,4 +5,5 @@ export interface TodosRepository extends Repository<TodoState> {
   create: (todo: TodoState) => Promise<TodoState>;
   getAll: () => Promise<TodoState[]>;
   getById: (id: Todo['id']) => Promise<TodoState | undefined>;
+  isExisting: (title: Todo['title']) => Promise<boolean>;
 }

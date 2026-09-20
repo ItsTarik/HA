@@ -23,8 +23,7 @@ export const createTodoUC = async (todosRepository: TodosRepository, todoDto: Cr
     return new TodoDtoParsingError(parsed.error.issues[0].message as TodoParingErrorMsgType);
   }
   const newTodo = new Todo(todoDto);
-  const todos = await todosRepository.getAll();
-  const existing = todos.find((t) => t.title === newTodo.title);
+  const existing = await todosRepository.isExisting(newTodo.title);
   if (existing) {
     return new TodoExistError();
   }
